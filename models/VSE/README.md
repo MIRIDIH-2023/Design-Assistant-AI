@@ -2,10 +2,10 @@
 
 ## due to GPU memory issue, you need to make npy file first
 ```
-!python /content/vse_infinity_custom/lib/datasets/make_image_pickle.py --number 0 
-!python /content/vse_infinity_custom/lib/datasets/make_image_pickle.py --number 10000 
-!python /content/vse_infinity_custom/lib/datasets/make_image_pickle.py --number 20000 
-!python /content/vse_infinity_custom/lib/datasets/make_image_pickle.py --number 30000  
+!python lib/datasets/make_image_pickle.py --number 0 
+!python lib/datasets/make_image_pickle.py --number 10000 
+!python lib/datasets/make_image_pickle.py --number 20000 
+!python lib/datasets/make_image_pickle.py --number 30000  
 ```
 ## when make npy file, run following command
 ```
