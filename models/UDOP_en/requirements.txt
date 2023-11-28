@@ -1,0 +1,11 @@
+git+https://github.com/NielsRogge/transformers.git@add_udop
+torch>=1.10.0
+evaluate
+matplotlib
+torchvision
+Pillow
+pytorch_lightning
+sentencepiece
+accelerate
+scikit-learn
+wandb
