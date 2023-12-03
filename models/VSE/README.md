@@ -1,5 +1,8 @@
 # how to use:
 
+## download grid backbone model from here
+```weights/original_updowmn_backbone.pth``` is the pre-trained ResNet-101 weights from [Bottom-up Attention Model](https://github.com/peteanderson80/bottom-up-attention), we converted the original Caffe weights into Pytorch. Please download it from [this link](https://drive.google.com/file/d/1gNdV1Qx_7yYzkhHrzqbP-bbNkdrKw_w1/view?usp=sharing).
+
 ## due to GPU memory issue, you need to make npy file first
 ```
 !python lib/datasets/make_image_pickle.py --number 0 
@@ -7,11 +10,14 @@
 !python lib/datasets/make_image_pickle.py --number 20000 
 !python lib/datasets/make_image_pickle.py --number 30000  
 ```
-## when make npy file, run following command
+## when make npy file, set path in train_grid.sh and run following command
+- DATASET_NAME='{YOUR_MODEL_NAME}'
+- DATA_PATH='{YOUR_DATA_PATH}'
+- WEIGHT_PATH='{YOUR_BACKBONE_MODEL_PATH}'
+- except data path, other params are set to default
 ```
 !sh train_grid.sh
 ```
-
 
 # Learning the Best Pooling Strategy for Visual Semantic Embedding
 
