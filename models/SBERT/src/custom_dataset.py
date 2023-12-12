@@ -65,8 +65,16 @@ class custom_dataset(Dataset):
         return masked_text, masked_key
 
     def get_negative_pair(self,index: int) -> Tuple[str, str]:
-        
-        #cur_text = self.weighted_shuffle(self.texts[index])
+        """
+        get negative sentence pair.
+
+        Args:
+            index (int): idx of torch.dataset
+
+        Returns:
+            Tuple[str, str]: (layout text with 20% masking
+                              ,negative keyword sentence with 20% masking)
+        """
         cur_text = self.texts[index] # -> List[str]
         cur_key = self.keys[index] # -> List[str]
 
