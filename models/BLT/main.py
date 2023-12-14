@@ -144,6 +144,13 @@ def main(argv):
                                                 composition=FLAGS.config.composition,
                                                 text_iou=True if text_iou_only == 1 else False)
 
+      '''
+        histogram 결과 값이 저장되는 경로
+        base_path
+              |___ report
+                      |____hist
+                              |____{prefix}_histogram_{exp}_{condition}_{iteration}.png
+      '''
       file_name = create_file_name(condition, FLAGS.workdir, text_iou_only, iteration)
       hist_path = os.path.join(report_path, "hist")
       if not os.path.exists(hist_path): os.makedirs(hist_path)

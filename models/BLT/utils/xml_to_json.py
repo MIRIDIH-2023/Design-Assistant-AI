@@ -100,15 +100,15 @@ def process_xml_dict(xml_dict, thumbnail):
     IM_SIZE = thumbnail.size
     RATIO = IM_SIZE[0] / SHEET_SIZE[0]
 
+    # ================================================================
+    # Text 이외이 Tag들의 정보를 저장하는 로직
     for tag in xml_dict["SHEET"] :
         if(tag == "TEXT" or tag == "SHEETSIZE" or tag == "TEMPLATE" or tag == "BACKGROUND" or
           tag == "GUIDELINES" or tag == "PageAnimations" or tag.startswith("@") or tag == "GROUP") : continue
 
         tagData = xml_dict["SHEET"][tag]
         tagData = dictIntoList(tagData)
-        # print(tag)
         for data in tagData:
-            # print(data)
             left, top, right, bottom = map(float, data['Position'].values())
 
             left = left if left >= 0 else 0
@@ -124,6 +124,7 @@ def process_xml_dict(xml_dict, thumbnail):
                 "rotate": data["@Rotate"],
                 "priority": data["@Priority"],
             })
+    # ================================================================
 
     # 오류: TEXT, RendorPos, TEXT안 text 데이터가 list가 아닌 dict인 경우
     if 'TEXT' not in xml_dict['SHEET']:
@@ -156,7 +157,8 @@ def process_xml_dict(xml_dict, thumbnail):
         t = text['Text']
         x1, y1, x2, y2 = process_bbox(XML_BBOX, IM_SIZE, SHEET_SIZE, int(float(text['@Rotate'])), center)
 
-        # =================================================
+        # ================================================================
+        # Text data 속성 추가
         font_family = set()
         font_familyId = set()
         font_size = set()
@@ -177,6 +179,7 @@ def process_xml_dict(xml_dict, thumbnail):
         font_size = list(font_size)
         line_space = list(line_space)
         outline_size = list(outline_size)
+        # ================================================================
 
         processed_json['form'].append({
             "text": t,
@@ -272,6 +275,7 @@ def make_sample_json(xml_sample_loc):
         processed_json['primary_color_weights'] = [float(weight) for weight in row['primary_color_weights'][1:-1].split(",")]
         processed_json['language'] = row['language']
         processed_json['keyword'] = list(set(row['keyword'].split("|")))
+        # processed_{idx}.pickle의 idx값, thumbnail_size값 추가 
         processed_json['idx'] = idx
         processed_json['thumbnail_size'] = size
 

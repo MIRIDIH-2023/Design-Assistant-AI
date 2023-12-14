@@ -20,26 +20,12 @@ const convertVercelMessageToLangChainMessage = (message: VercelChatMessage) => {
   }
 };
 
-// const PREFIX_TEMPLATE = "Response must be Korean. " +
-//                         "You are robot generating contents in Presentations. " +
-//                         "You should generate the contents for one slide. The slide can be a Cover, Table of contents, Introduction, Body, and Conclusion. " +
-//                         "Ask follow up questions related to the slide category to the user until you have confident you can produce a perfect text contents, not design elements. " +
-//                         "When you can produce a perfect text contents, your return that are text contents should be noun phrases. " +
-//                         "The text contents must be separated into new lines. Put the prefix marks: \'-\'.";
-
 const TEMPLATE =
   "You are robot generating contents in Presentations. " +
   "You should generate only the contents that will fit on one slide. The slide can be a Cover, Table of contents, Introduction, Body, and Conclusion. " +
   "Ask follow up questions by way of example that relate to the characteristics of a particular slide, not design elements, and questions that are needed to create more complete and detailed contents to the user after you make a text contents as complete as possible. " +
-  // "Additionaly, when a user asks about an ambiguous topic, inform them to provide a specific subject and suggest how to ask the question in a way that would enable a better response." +
   "Your return that are text contents should be noun phrases. " +
   "The text contents must be separated into new lines, and five or less, and should be key. Put the prefix marks: '-'.";
-
-// const TEMPLATE = `Extract the requested fields from the input.
-
-// Input:
-
-// {input}`;
 
 /**
  * This handler initializes and calls an OpenAI Functions agent.
@@ -112,7 +98,7 @@ export async function POST(req: NextRequest) {
     const executor = await initializeAgentExecutorWithOptions(tools, chat, {
       agentType: "openai-functions",
       verbose: true,
-      // maxIterations: 5,
+      maxIterations: 5,
       memory: new BufferMemory({
         memoryKey: "chat_history",
         chatHistory: new ChatMessageHistory(previousMessages),
@@ -121,15 +107,12 @@ export async function POST(req: NextRequest) {
       }),
       agentArgs: {
         prefix: PREFIX_TEMPLATE,
-        // systemMessage: PREFIX_TEMPLATE,
       },
     });
 
     const result = await executor.call({
       input: currentMessageContent,
     });
-
-    // result.output = `- 2023 디자인캣 연간 보고서\n- Sales department annual report\n- Design cat\n- [이메일]\n\n이런 내용이 포함되어야 할 것 같습니다. 추가로 어떤 내용이 필요할까요? 특별한 문구나 발표 날짜 등이 있을까요?`;
 
     const textEncoder = new TextEncoder();
     const fakeStream = new ReadableStream({
@@ -143,9 +126,6 @@ export async function POST(req: NextRequest) {
     });
 
     return new StreamingTextResponse(fakeStream);
-    // const organizedContent = `${result.output.replace(/\n/g, '\n')}`;
-
-    // return NextResponse.json(organizedContent, { status: 200 });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: 500 });
   }

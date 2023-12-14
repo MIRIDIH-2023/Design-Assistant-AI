@@ -23,7 +23,7 @@ def get_config():
 
   config = ml_collections.ConfigDict()
   # Exp info
-  config.dataset_path = "/home/work/increased_en_data/BLT/data/"
+  config.dataset_path = "/BLT/data/"
   config.dataset = "CATEGORIZED"
   config.vocab_size = 143
   config.experiment = "bert_layout"
@@ -62,7 +62,7 @@ def get_config():
   config.label_smoothing = 0.0
   config.sampling_method = "top-p"
   config.use_vertical_info = False
-  # config.test_checkpoint_dir = "/home/work/increased_en_data/BLT/test_all/checkpoints"
+  config.test_checkpoint_dir = "/path/checkpoints"
 
   # Optimizer info
   config.optimizer = ml_collections.ConfigDict()
