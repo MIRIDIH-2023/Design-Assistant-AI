@@ -15,8 +15,14 @@ import math
 import json
 from io import BytesIO
 
-# SVG의 색상을 color_map에 따라 변경
 def change_svg_color(svg_content, color_map):  
+  """ SVG의 색상을 color_map에 따라 변경
+  Args:
+    svg_content: SVG 파일
+    color_map: xml에서 추출한 fillColorMap
+  Returns:
+    변경된 SVG 파일
+  """
   svg_content = svg_content.decode('utf-8')
   
   color_mapping = {}
@@ -36,8 +42,11 @@ def change_svg_color(svg_content, color_map):
 
   return svg_content.encode('utf-8')
 
-# 필요한 데이터를 로드하고 합친 후 반환
 def load_data():
+  """ 템플릿, 이미지 링크 데이터를 로드하고 합친 후 반환
+  Returns:
+    템플릿, 래스터 이미지 링크 데이터, 벡터 이미지 링크 데이터
+  """
   # 템플릿 데이터
   df_1 = pd.read_csv('data/xml샘플데이터_20230703-1.csv')
   df_2 = pd.read_csv('data/xml샘플데이터_20230703-2.csv')
@@ -55,27 +64,47 @@ def load_data():
   svg_links = svg_links.reset_index(drop=True)
   return df, image_links, svg_links
 
-# 주어진 key로부터 이미지의 url을 반환
-def get_image_link(key, image_links, svg_links, is_svg): # is_svg: svg인지 아닌지 여부
+def get_image_link(key, image_links, svg_links, is_svg):
+  """ 주어진 key로부터 이미지의 url을 반환
+  Args:
+    key: 이미지의 key
+    image_links: 래스터 이미지 링크 데이터
+    svg_links: 벡터 이미지 링크 데이터
+    is_svg: svg인지 아닌지 여부
+  Returns:
+    이미지의 url
+  """
   if is_svg:
     return svg_links[svg_links['key'] == key]['image_url'].values[0]
   return image_links[image_links['key'] == key]['image_url'].values[0]
 
-
-# URL로부터 XML을 다운로드하고 파싱하여 반환
 def parse_xml_from_url(url):
+  """ URL로부터 XML을 다운로드하고 파싱하여 반환
+  Args:
+    url: XML의 URL
+  """
   response = requests.get(url)
   content = response.content
   xml = xmltodict.parse(content)
   return xml
 
-# XML로부터 전체 sheet의 크기를 추출하여 반환
 def extract_size_from_xml(xml):
+  """ XML로부터 전체 sheet의 크기를 추출하여 반환
+  Args:
+    xml: 파싱된 XML
+  Returns:
+    (sheet의 너비, sheet의 높이)
+  """
   size = (int(xml['SHEET']['SHEETSIZE']['@cx']), int(xml['SHEET']['SHEETSIZE']['@cy']))
   return size
 
-# XML로부터 이미지를 렌더링하는데 필요한 데이터를 추출하여 반환
 def extract_image_data_from_xml(xml, image_links, svg_links):
+  """ XML로부터 이미지를 렌더링하는데 필요한 데이터를 추출하여 반환
+  Args:
+    xml: 파싱된 XML
+    image_links: 래스터 이미지 링크 데이터
+    svg_links: 벡터 이미지 링크 데이터
+  """
   images = []
 
   # 이미지 관련 XML태그와 해당 태그의 key값이 적혀 있는 속성의 이름을 매핑
@@ -111,13 +140,26 @@ def extract_image_data_from_xml(xml, image_links, svg_links):
   images = sorted(images, key=lambda x: x['priority'])
   return images
 
-# XMl로부터 배경색을 추출하여 반환
 def extract_background_color_from_xml(xml):
+  """ XML로부터 배경색을 추출하여 반환
+  Args:
+    xml: 파싱된 XML
+  Returns:
+    배경색
+  """
   background_color = xml['SHEET']['BACKGROUND']['@Color']
   return background_color
 
-# XML로부터 배경 이미지를 렌더링하여 반환
 def create_image_from_xml(xml, image_links, svg_links, size_):
+  """ XML로부터 배경 이미지를 렌더링하여 반환
+  Args:
+    xml: 파싱된 XML
+    image_links: 래스터 이미지 링크 데이터
+    svg_links: 벡터 이미지 링크 데이터
+    size_: 생성할 배경 이미지의 크기
+  Returns:
+    배경 이미지 (PIL.Image)
+  """
   size = extract_size_from_xml(xml)
   images_data = extract_image_data_from_xml(xml, image_links, svg_links)
   background_color = extract_background_color_from_xml(xml)
@@ -165,41 +207,59 @@ def create_image_from_xml(xml, image_links, svg_links, size_):
   canvas = canvas.resize(size_, resample=Image.BICUBIC)
   return canvas
 
-# 샘플 데이터의 링크에 몇몇 잘못된 형식의 링크가 있음
-# 이를 처리하기 위한 함수
 def clean_url(url):
-    return re.sub(r'(https://file\.miricanvas\.com/).*(template_sheet)', r'\1\2', url)
+  """ 샘플 데이터의 링크의 몇몇 잘못된 형식의 링크를 처리
+  Args:
+    url: 샘플 데이터의 링크
+  Returns:
+    처리된 링크
+  """
+  return re.sub(r'(https://file\.miricanvas\.com/).*(template_sheet)', r'\1\2', url)
 
-# 바운딩 박스를 이미지 크기에 맞게 리사이징하고, 주어진 각도만큼 회전
 def process_bbox(XML_BBOX, IM_SIZE, SHEET_SIZE, angle, center):
-    RATIO = IM_SIZE[0] / SHEET_SIZE[0]
-    x1, y1, x2, y2 = map(float, XML_BBOX)
-    x1, y1, x2, y2 = (x1 * RATIO, y1 * RATIO, x2 * RATIO, y2 * RATIO)
-    center = (center[0] * RATIO, center[1] * RATIO)
+  """ 바운딩 박스를 이미지 크기에 맞게 리사이징하고, 주어진 각도만큼 회전
+  Args:
+    XML_BBOX: 바운딩 박스 (x1, y1, x2, y2)
+    IM_SIZE: 이미지 크기 (w, h)
+    SHEET_SIZE: 시트 크기 (w, h)
+    angle: 회전할 각도
+    center: 회전할 중심점
+  Returns:
+    수정된 바운딩 박스 (x1, y1, x2, y2)
+  """
+  RATIO = IM_SIZE[0] / SHEET_SIZE[0]
+  x1, y1, x2, y2 = map(float, XML_BBOX)
+  x1, y1, x2, y2 = (x1 * RATIO, y1 * RATIO, x2 * RATIO, y2 * RATIO)
+  center = (center[0] * RATIO, center[1] * RATIO)
 
-    if angle != 0:
-        angle = 360 - angle
-        angle = math.radians(angle)
-        
-        center_x, center_y = center
+  if angle != 0:
+    angle = 360 - angle
+    angle = math.radians(angle)
+    
+    center_x, center_y = center
 
-        distance_x = (x1 - center_x)
-        distance_y = (y1 - center_y)
+    distance_x = (x1 - center_x)
+    distance_y = (y1 - center_y)
 
-        new_distance_x = distance_x * math.cos(angle) - distance_y * math.sin(angle)
-        new_distance_y = distance_x * math.sin(angle) + distance_y * math.cos(angle)
+    new_distance_x = distance_x * math.cos(angle) - distance_y * math.sin(angle)
+    new_distance_y = distance_x * math.sin(angle) + distance_y * math.cos(angle)
 
-        x1 = center_x + new_distance_x
-        y1 = center_y + new_distance_y
-        x2 = center_x - new_distance_x
-        y2 = center_y - new_distance_y
+    x1 = center_x + new_distance_x
+    y1 = center_y + new_distance_y
+    x2 = center_x - new_distance_x
+    y2 = center_y - new_distance_y
 
-    x1, y1, x2, y2 = map(int, (x1, y1, x2, y2))
+  x1, y1, x2, y2 = map(int, (x1, y1, x2, y2))
 
-    return x1, y1, x2, y2
+  return x1, y1, x2, y2
 
-# 주어진 텍스트 데이터로부터 바운딩 박스를 추출하여 반환
 def get_render_bbox(text):
+    """ 텍스트 데이터로부터 바운딩 박스를 추출하여 반환
+    Args:
+      text: xml에서 추출한 TEXT 태그의 데이터
+    Returns:
+      바운딩 박스(x1, y1, x2, y2)의 리스트
+    """
     global total_no_renderpos
     # RenderPos가 없는 경우 무시
     if "RenderPos" not in text or text['RenderPos'] == None:
@@ -226,14 +286,19 @@ def get_render_bbox(text):
 
     return render_bbox
 
-# 텍스트 데이터로부터 추출한 바운딩 박스 리스트로부터 전체 바운딩 박스를 계산하여 반환
 def get_bbox(render_bbox):
-    min_x = min([x[0] for x in render_bbox])
-    min_y = min([x[1] for x in render_bbox])
-    max_x = max([x[2] for x in render_bbox])
-    max_y = max([x[3] for x in render_bbox])
+  """ 텍스트 데이터로부터 추출한 바운딩 박스 리스트로부터 전체 바운딩 박스를 계산하여 반환
+  Args:
+    render_bbox: 바운딩 박스(x1, y1, x2, y2)의 리스트
+  Returns:
+    전체 바운딩 박스 (x1, y1, x2, y2)
+  """
+  min_x = min([x[0] for x in render_bbox])
+  min_y = min([x[1] for x in render_bbox])
+  max_x = max([x[2] for x in render_bbox])
+  max_y = max([x[3] for x in render_bbox])
 
-    return min_x, min_y, max_x, max_y
+  return min_x, min_y, max_x, max_y
 
 # 오류 처리 함수 
 def dictIntoList(TEXT_TagData) :
@@ -244,8 +309,14 @@ def dictIntoList(TEXT_TagData) :
   
   return TEXT_TagData
 
-# XML데이터를 UDOP 학습을 위한 json 형태로 변환
 def process_xml_dict(xml_dict, thumbnail):
+    """ XML데이터를 UDOP 학습을 위한 json 형태로 변환
+    Args:
+      xml_dict: 파싱된 XML
+      thumbnail: 썸네일 이미지
+    Returns:
+      Dictionary 형태의 UDOP 학습 데이터
+    """
     global total_no_text
     processed_json = {}
     processed_json['form'] = []
@@ -315,8 +386,14 @@ def process_xml_dict(xml_dict, thumbnail):
 
     return processed_json
 
-# XML의 링크와 썸네일의 링크로부터 json 형태로 변환한 데이터와 원본 썸네일 이미지의 크기를 반환
 def process_xml(sheet_url, thumbnail_url):
+    """ XML의 링크와 썸네일의 링크로부터 json 형태로 변환한 데이터와 원본 썸네일 이미지의 크기를 반환
+    Args:
+      sheet_url: XML의 링크
+      thumbnail_url: 썸네일의 링크
+    Returns:
+      Dictionary 형태의 UDOP 학습 데이터, 썸네일 이미지의 크기
+    """
     global total_wrong_image
     global total_wrong_xml
     try:
@@ -337,34 +414,45 @@ def process_xml(sheet_url, thumbnail_url):
 
     return processed_json, sample_thumbnail.size
 
-# 16진수 색상을 RGB로 변환
 def hex_to_rgb(hex_string):
-    return [int(hex_string[idx:idx+2], 16) for idx in (1, 3, 5)]
+  """ 16진수 색상을 RGB로 변환
+  Args:
+    hex_string: 16진수 색상
+  Returns:
+    RGB 색상 (R, G, B)
+  """
+  return [int(hex_string[idx:idx+2], 16) for idx in (1, 3, 5)]
 
-# 샘플 csv의 각 행을 json 형태로 변환하여 파일로 저장
 def make_sample_json(row, idx):
-    # 영어 데이터만 사용
-    if row['language'] == 'en':
-        processed_json, size = process_xml(row['sheet_url'], row['thumbnail_url'])
-        if processed_json is None : 
-            return None
-        processed_json['template_idx'] = int(row['tempate_idx'])
-        processed_json['sheet_url'] = row['sheet_url']
-        processed_json['thumbnail_url'] = row['thumbnail_url']
-        processed_json['page_no'] = int(row['page_no'])
-        processed_json['title'] = row['title']
-        processed_json['primary_colors'] = [hex_to_rgb(color) for color in row['primary_colors'][1:-1].split(",")]
-        processed_json['primary_color_weights'] = [float(weight) for weight in row['primary_color_weights'][1:-1].split(",")]
-        processed_json['language'] = row['language']
-        processed_json['category'] = row['category']
-        processed_json['keyword'] = list(set(row['keyword'].split("|")))
-        filename = f"./data/json_data/{idx}.pickle"
-        with open(filename, "wb") as file_:
-            pickle.dump(processed_json, file_)
-    else:
-       # 영어가 아닌 경우 무시
-       return None
-    return processed_json, size
+  """ 샘플 csv의 각 행을 json 형태로 변환하여 파일로 저장, 
+  Args:
+    row: 저장할 행
+    idx: 저장할 파일의 인덱스
+  Returns:
+    Dictionary 형태의 UDOP 학습 데이터, 썸네일 이미지의 크기
+  """
+  # 영어 데이터만 사용
+  if row['language'] == 'en':
+    processed_json, size = process_xml(row['sheet_url'], row['thumbnail_url'])
+    if processed_json is None : 
+      return None
+    processed_json['template_idx'] = int(row['tempate_idx'])
+    processed_json['sheet_url'] = row['sheet_url']
+    processed_json['thumbnail_url'] = row['thumbnail_url']
+    processed_json['page_no'] = int(row['page_no'])
+    processed_json['title'] = row['title']
+    processed_json['primary_colors'] = [hex_to_rgb(color) for color in row['primary_colors'][1:-1].split(",")]
+    processed_json['primary_color_weights'] = [float(weight) for weight in row['primary_color_weights'][1:-1].split(",")]
+    processed_json['language'] = row['language']
+    processed_json['category'] = row['category']
+    processed_json['keyword'] = list(set(row['keyword'].split("|")))
+    filename = f"./data/json_data/{idx}.pickle"
+    with open(filename, "wb") as file_:
+      pickle.dump(processed_json, file_)
+  else:
+    # 영어가 아닌 경우 무시
+    return None
+  return processed_json, size
 
 def main():
   df, image_links, svg_links = load_data()
