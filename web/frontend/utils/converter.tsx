@@ -1,5 +1,12 @@
 import { Image, Text } from "react-pptx";
 
+/**
+ * 레이아웃 정보를 받아 React-PPTX 컴포넌트로 변환합니다.
+ * @param layout [x0, y0, x1, y1]
+ * @param text 텍스트
+ * @param imgUrl 배경 이미지 URL
+ * @returns 변환된 컴포넌트
+ */
 export function convertLayoutToComponent(
   layout: number[],
   text: string,
