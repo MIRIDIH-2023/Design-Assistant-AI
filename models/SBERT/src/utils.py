@@ -16,7 +16,7 @@ def has_five_digits(string:str) -> bool:
     return count >= 5
 
 
-def is_valid_keyword(keyword:str) -> str:
+def is_valid_keyword(keyword:str) -> bool:
   """
   check whether keyword is valid (not dummy keyword)
   """
@@ -27,7 +27,10 @@ def is_valid_keyword(keyword:str) -> str:
   return True
 
 
-def unzip_data(data_path, extract_path):
+def unzip_data(data_path:str, extract_path:str)->None:
+    """
+    unzip data to predefined path
+    """
     with ZipFile(data_path, 'r') as zip_ref:
         zip_ref.extractall(extract_path)
 
@@ -38,11 +41,15 @@ def processing_data(folder_path, data_path=None, extract_path=None) -> Tuple[Lis
     sentence_list example: [ [set1, set2, set3], [set4, set5, set6], ... ]
     data_list: list of xml dict
     """
+    
+    #unzip zip file into pickle if needed
     if (not os.path.exists(folder_path)):
         unzip_data(data_path=data_path, extract_path=extract_path)
 
+    #get data list
     file_names = os.listdir(folder_path)
 
+    #read pickle file and save as list
     data_list = []
     for file_name in file_names:
         if file_name.startswith("processed_") and file_name.endswith(".pickle"):
@@ -55,24 +62,33 @@ def processing_data(folder_path, data_path=None, extract_path=None) -> Tuple[Lis
     text_list = []
     new_data_list = []
 
+    #change unprocessed json list to keyword/text/data list
     for i in range(len(data_list)):
+        #check keyword valide
         keyword = data_list[i]['keyword']
         keyword = [word for word in keyword if is_valid_keyword(word)]
+        
+        #error case
         if len(keyword) == 0:
             continue
+        
         keyword_list.append(keyword)
         text_list.append([])
+        
+        #only save layout text info in text_list
         for j in range(len(data_list[i]['form'])):
             if type(data_list[i]['form'][j]['text']) == str:
                 text = data_list[i]['form'][j]['text']
                 text_list[i].append(text)
+        
+        #in new_data_list, save all information
         new_data_list.append(data_list[i])
 
     data_list = new_data_list
     
     return keyword_list, text_list, data_list
 
-def i2t(npts, sims, return_ranks=False):
+def i2t(npts:int, sims:np.array, return_ranks=False) -> Tuple(float,float,float,float,float):
     """
     our metric for evaluate SBERT performance. \n
     int our case, image==xml text, caption==keyword
