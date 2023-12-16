@@ -23,10 +23,19 @@ class custom_dataset(Dataset):
 
     def __len__(self) -> int:
         #do not use front 1000 datas
-        return 2 * len(self.keys) - 2000
+        
+        if(len(self.keys)<2000):
+            return len(self.keys)
+        else:
+            return 2 * len(self.keys) - 2000
 
     def __getitem__(self, index:int) -> InputExample:
-        index = index + 2000
+        
+        #for sample training
+        if(len(self.keys)<2000):
+            index = index
+        else:
+            index = index + 2000
         
         #when positive
         if index%2==0:

@@ -1,5 +1,5 @@
-from src.custom_dataset import custom_dataset
-from src.test_dataset import test_dataset
+from src.train_dataset import custom_dataset
+from src.test_dataset import test_dataset as Test_dataset
 from src.utils import *
 from sentence_transformers import SentenceTransformer, losses
 import math
@@ -10,7 +10,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 import argparse
 from typing import Tuple
 
-def load_data(config) -> Tuple(List,List,List):
+def load_data(config) -> Tuple[List,List,List]:
     """
     split pickle file into three list and return 
     1. keyword list
@@ -35,7 +35,7 @@ def train(config, data:Tuple[List,List,List]) -> SentenceTransformer:
     
     #load model
     model =  SentenceTransformer("distiluse-base-multilingual-cased-v1")
-    
+        
     #load data
     train_dataset = custom_dataset(keys_list, texts_list, datas_list)
     train_dataloader = DataLoader(train_dataset, shuffle=True, batch_size=config.batch_size)
@@ -67,7 +67,7 @@ def evaluate(config,
     keys_list, texts_list, datas_list = data
     
     #it is not data_leakage, because we do not use front 1000 data when train
-    test_dataset = test_dataset(keys_list[:1000],texts_list[:1000],datas_list[:1000])
+    test_dataset = Test_dataset(keys_list[:1000],texts_list[:1000],datas_list[:1000])
     npts = len(test_dataset)
 
     embedded_key = []
@@ -105,7 +105,7 @@ def main(config):
         model.save(config.save_path)
     
     if(config.is_evaluate):
-        evaluate(model,data)
+        evaluate(config,data,model)
 
 
 if __name__=="__main__":
@@ -114,14 +114,14 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser(description='설명을 입력하세요')
     
     # 각각의 인자값 추가
-    parser.add_argument('--is_save', type=bool, default=True, help='저장 여부')
-    parser.add_argument('--is_evaluate', type=bool, default=True, help='평가 여부')
-    parser.add_argument('--save_path', type=str, default=None, help='저장 경로')
-    parser.add_argument('--folder_path', type=str, default=None, help='폴더 경로')
-    parser.add_argument('--data_path', type=str, default=None, help='데이터 경로')
-    parser.add_argument('--extract_path', type=str, default=None, help='추출 경로')
-    parser.add_argument('--num_epoch', type=int, default=7, help='에폭 수')
-    parser.add_argument('--batch_size', type=int, default=64, help='배치 크기')
+    parser.add_argument('--is_save', type=bool, default=False, help='save model')
+    parser.add_argument('--is_evaluate', type=bool, default=True, help='evaluate model')
+    parser.add_argument('--save_path', type=str, default=None, help='path you want to save model')
+    parser.add_argument('--folder_path', type=str, default='make_dataset/sample/sbert_data', help='path of unziped ~~.json file')
+    parser.add_argument('--data_path', type=str, default='models/SBERT/data', help='path to .zip file')
+    parser.add_argument('--extract_path', type=str, default='models/SBERT/data', help='path you want to unzip')
+    parser.add_argument('--num_epoch', type=int, default=3, help='num of epoch(best=7)')
+    parser.add_argument('--batch_size', type=int, default=2, help='num of batch(best=100)')
     
     # 입력받은 인자값들을 args에 저장
     args = parser.parse_args()

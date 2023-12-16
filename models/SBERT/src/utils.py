@@ -37,6 +37,10 @@ def unzip_data(data_path:str, extract_path:str)->None:
 """process data. if data doesn't exist, unzip folder"""
 def processing_data(folder_path, data_path=None, extract_path=None) -> Tuple[List[List[str]],List[List[str]],List[dict]]:
     """
+    folder path: extracted folder path
+    data path: zip file path
+    extract path: path you want to unzip
+    
     keyword_list example: [ [key1, key2, key3], [key4, key5, key6], ... ]
     sentence_list example: [ [set1, set2, set3], [set4, set5, set6], ... ]
     data_list: list of xml dict
@@ -88,7 +92,7 @@ def processing_data(folder_path, data_path=None, extract_path=None) -> Tuple[Lis
     
     return keyword_list, text_list, data_list
 
-def i2t(npts:int, sims:np.array, return_ranks=False) -> Tuple(float,float,float,float,float):
+def i2t(npts:int, sims:np.array, return_ranks=False) -> Tuple[float,float,float,float,float]:
     """
     our metric for evaluate SBERT performance. \n
     int our case, image==xml text, caption==keyword
