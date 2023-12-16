@@ -19,6 +19,13 @@
 !sh train_grid.sh
 ```
 
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+
 # Learning the Best Pooling Strategy for Visual Semantic Embedding
 
 <img src="docs/assets/img/pytorch-logo-dark.png" width="10%"> [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) 
