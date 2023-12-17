@@ -29,11 +29,11 @@ pip install jaxlib==0.1.69+cuda110 -f https://storage.googleapis.com/jax-release
 ### 데이터 경로 설정
 **input**
 ``` python
-make_sample_json('/data/path/sample.csv')       # line 298
+make_sample_json('./all_data/sample_20230703-1.csv')       # line 298
 ```
 **output**
 ``` python
-filename = f"/data/path/processed_{idx}.pickle" # line 284
+filename = f"./all_data/json_data/processed_{idx}.pickle" # line 284
 ```
 **유의 사항**
 output 경로는 아래 directroy 구조를 따라야 합니다.
@@ -50,9 +50,9 @@ RendorPos만 따로 분리하여 train, eval, test 데이터셋을 생성합니�
 
 **경로 설정**
 ``` python
-source_path = "path/all_data"         # .pickle 파일 경로
-renderPos_data_path = "path/posData"  # RendorPos 데이터셋 저장 경로
-splitted_data_path = "path/data"      # train, eval, test 데이터셋 저장 경로
+source_path = "./all_data"           # .pickle 파일 경로
+renderPos_data_path = "./rendorPos"  # RendorPos 데이터셋 저장 경로
+splitted_data_path = "./data"        # train, eval, test 데이터셋 저장 경로
 ```
 **실행**
 ``` bash
