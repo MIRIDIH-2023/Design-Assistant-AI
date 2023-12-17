@@ -82,8 +82,8 @@ BLT는 이미지 데이터를 사용하지 않기 때문에 XML 데이터만 저
 | key | 데이터 형식 |
 | --- | --- |
 | `'tags_info'` | ```List[Dict[str, Union]]``` |
-| `'no_texts'` | `int` |
-| `'no_RendorPos'` | `str` |
+| `'no_texts'` | `bool` |
+| `'no_RendorPos'` | `bool` |
 | `'thumbnail_size'` &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| `str` |
 | `'idx'` | `int` |
 
