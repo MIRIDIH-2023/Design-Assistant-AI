@@ -1,10 +1,18 @@
+# Design-Assistant-AI
+## 2023 MIRIDIH Corporate Collaboration Project
+--- 
 <div align="center">
 
-# Design-Assistant-AI
-
-![stop2023](img/stop2023.png)
+![stop2023](img/stop2023.png){: width="100%" height="100%"}
 
 </div>
+
+## Contributors 🙌 
+- 김상현 (성균관대학교 소프트웨어학과 22학번)
+- 김종효 (성균관대학교 소프트웨어학과 22학번)
+- 신상윤 (성균관대학교 소프트웨어학과 21학번)
+- 이찬영 (성균관대학교 소프트웨어학과 19학번)
+- 주현진 (성균관대학교 소프트웨어학과 22학번)
 
 # How to use (in local host)
 ## 1. run api
