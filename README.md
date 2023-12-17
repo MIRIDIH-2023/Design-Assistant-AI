@@ -1,4 +1,10 @@
+<div align="center">
+
 # Design-Assistant-AI
+
+![stop2023](img/stop2023.png)
+
+</div>
 
 # How to use (in local host)
 ## 1. run api
@@ -12,10 +18,7 @@ npm install
 npm run dev
 ```
 
-![stop2023](img/stop2023.png)
-
-
-
+# Repository Structure
 ```
 .
 ├── data_folder
