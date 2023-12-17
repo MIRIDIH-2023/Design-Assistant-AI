@@ -5,9 +5,9 @@ import os
 import pickle
 import json
 
-source_path = "/home/work/increased_en_data/BLT/all_data"
-renderPos_data_path = "/home/work/increased_en_data/BLT/posData"
-splitted_data_path = "/home/work/increased_en_data/BLT/data2"
+source_path = "./all_data"
+renderPos_data_path = "./rendorPos"
+splitted_data_path = "./data"
 no_renderPos_data_list = []
 
 assert os.path.exists(source_path)
