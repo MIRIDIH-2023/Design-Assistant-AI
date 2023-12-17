@@ -281,7 +281,7 @@ def make_sample_json(xml_sample_loc):
 
         # save  a processed data
         total_correct += 1
-        filename = f"/data/path/processed_{idx}.pickle"
+        filename = f"./all_data/json_data/processed_{idx}.pickle"
         with open(filename, "wb") as file_:
             pickle.dump(processed_json, file_)
 
@@ -295,4 +295,4 @@ def make_sample_json(xml_sample_loc):
 
 
 if __name__ == "__main__":
-    make_sample_json('/data/path/sample_20230703-1.csv')
+    make_sample_json('./all_data/sample_20230703-1.csv')

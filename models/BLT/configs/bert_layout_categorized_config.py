@@ -23,7 +23,7 @@ def get_config():
 
   config = ml_collections.ConfigDict()
   # Exp info
-  config.dataset_path = "/BLT/data2/"
+  config.dataset_path = "./data"
   config.dataset = "CATEGORIZED"
   config.vocab_size = 154  # self.offset_class: 4 + self.number_classes + (self.resolution_w: 32 + self.resolution_h: 32) * 2
   config.experiment = "bert_layout"
@@ -32,7 +32,7 @@ def get_config():
 
   # 추가한 부분
   # inference한 결과 시각화 이미지 저장 경로(result_path/result)와 성능 평가 저장 경로(result_path/report)를 위해 지정하는 경로
-  config.result_path = "/home/work/increased_en_data/BLT/"
+  config.result_path = "./results"
   # 데이터 input format 구성 방식 
   config.composition = "ltrb" # default, ltwh, ltrb
   # 데이터의 input 요소를 정렬하는 방식

@@ -1,7 +1,10 @@
 # 학습 데이터 셋 생성 코드
 
 ## 소개
+생성한 데이터를 각각의 모델 데이터 경로에 저장하는 방법도 있지만 본 문서는 `make_dataset/data` 경로에 저장하고 각 모델의 데이터 경로로 옮기는 것을 전제로 작성되었습니다.
 - xml_to_json.py : UDOP, SBERT 학습 데이터 생성용
+   - UDOP 데이터 경로: `UDOP/data/`
+   - SBERT 데이터 경로: `SBERT/data/`
 - blt_xml_to_json.py : BLT 학습 데이터 생성용
 
 ## 사용 방법
@@ -13,16 +16,16 @@
 ``` python
 # load_data()
 # 템플릿 데이터
-df_1 = pd.read_csv('data/sample1.csv')
-df_2 = pd.read_csv('data/sample2.csv')
+df_1 = pd.read_csv('data/xml샘플데이터_20230703-1.csv')
+df_2 = pd.read_csv('data/xml샘플데이터_20230703-2.csv')
 
 # 래스터 이미지 링크 데이터
-image_links_1 = pd.read_csv('data/link1.csv')
-image_links_2 = pd.read_csv('data/link2.csv')
+image_links_1 = pd.read_csv('data/이미지링크데이터_20230926-1.csv')
+image_links_2 = pd.read_csv('data/이미지링크데이터_20230926-2.csv')
 
 # 벡터 이미지 링크 데이터
-svg_links_1 = pd.read_csv('data/link3.csv')
-svg_links_2 = pd.read_csv('data/link4.csv')
+svg_links_1 = pd.read_csv('data/이미지링크데이터_20231012-1.csv')
+svg_links_2 = pd.read_csv('data/이미지링크데이터_20231012-2.csv')
 ```
 **output**
 ``` python
