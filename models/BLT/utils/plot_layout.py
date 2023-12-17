@@ -144,11 +144,17 @@ def plot_sample_with_PIL(data,
 
     Args:
         data: A sequence of bounding boxes. They must be in the 'networks output'
-        format (see dataset_entries_to_network_outputs).
+        workdir: The name of the experiment.
+        base_path: The path to the folder where the results will be saved.
+        dataset_type: Dataset type keyword. Necessary to assign labels. "CATEGORIZED", "MIRI"
+        im_type: The type of the image. "no_input", "input", "infer"
+        idx: The index of the image in the dataset.
+        image_link: The link to the image.
+        conditional: The type of the conditional. "a", "a+s", "custom"
+        composition: The type of the composition. "default", "ltwh", "ltrb"
         target_width: Result image width.
         target_height: Result image height.
         dataset_type: Dataset type keyword. Necessary to assign labels.
-        border_size: Width of the border added to the image.
         thickness: It is the thickness of the rectangle border line in px.
         Thickness of -1 px will display each box with a colored box without text.
     """

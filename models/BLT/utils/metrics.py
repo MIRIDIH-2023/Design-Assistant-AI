@@ -69,16 +69,17 @@ def get_ltrb_from_composition(composition, bbox) :
 
   return min_x, min_y, max_x, max_y
 
+"""Computes the IOU on the text layout level.
+
+Args:
+  layout: 1-d integer array in which in which every 5 elements form a group
+    of box in the format (wdith, height, center_x, center_y).
+  composition: The composition of the layout. It can be "ltrb", "ltwh", or "default".
+
+Returns:
+  The value for the overlap index. If no overlaps are found, 0 is returned.
+"""
 def get_text_layout_iou(layout, composition):
-  """Computes the IOU on the text layout level.
-
-  Args:
-    layout: 1-d integer array in which in which every 5 elements form a group
-      of box in the format (wdith, height, center_x, center_y).
-
-  Returns:
-    The value for the overlap index. If no overlaps are found, 0 is returned.
-  """
   layout = np.array(layout, dtype=np.float32)
   layout = np.reshape(layout, (-1, 5))
   layout_channels = []
@@ -99,6 +100,16 @@ def get_text_layout_iou(layout, composition):
     return 0.
   return overlap_area / bbox_area
 
+"""Computes the IOU between real and generated layout level.
+
+Args:
+  layout: 1-d integer array in which in which every 5 elements form a group
+    of box in the format (wdith, height, center_x, center_y).
+  composition: The composition of the layout. It can be "ltrb", "ltwh", or "default".
+
+Returns:
+  The value for the overlap index. If no overlaps are found, 0 is returned.
+"""
 def get_iou_real_gen(g_layout, r_layout, composition) :
   g_layout = np.array(g_layout, dtype=np.float32)
   g_layout = np.reshape(g_layout, (-1, 5))

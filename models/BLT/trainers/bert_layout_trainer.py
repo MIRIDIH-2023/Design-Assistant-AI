@@ -480,6 +480,19 @@ class BERTLayoutTrainer(base_trainer.LayoutBaseTrainer):
     real_samples = jnp.concatenate(real_sample_list, axis=0)
     return generated_samples, real_samples
 
+  '''inference 결과를 배경 이미지와 함께 반환하는 함수
+    Args:
+      batch_size: 배치 사이즈
+      iterative_nums: 반복 횟수
+      conditional: decoding 방식
+      max_decode_len: 최대 sequence 길이
+      use_vertical: vertical 정보 사용 여부
+      sample_step_num: test할 데이터 개수 (사용하지 않음)
+      max_asset_num: 최대 asset 개수 (생성할 최대 bounding box 개수와 동일)
+      idx: test dataset list에서 inference에 사용할 데이터의 index
+    return:
+      generated_samples: 생성된 sample
+  '''
   def test_with_backgroundImage(self,
            batch_size=1,
            iterative_nums=None,

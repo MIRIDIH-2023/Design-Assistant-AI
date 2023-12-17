@@ -142,7 +142,10 @@ def get_dataset(batch_size,
     add_bos: Whether add bos and eos to the input sequence.
     dataset_name: The name of dataset.
     shuffle: Shuffle objects or not.
-
+    idx: index of the data to load
+    is_background_test: whether to return image link or not
+    composition: default, ltwh, ltrb
+    sort_by: top_left_to_bottom_right, distance_from_center
   Returns:
     One tf dataset.
     Vocab size in this dataset.
@@ -190,6 +193,8 @@ def get_all_dataset(batch_size,
     max_length: the maximum length of input sequence.
     dataset_name: the name of the input dataset.
     shuffle: shuffle objects or not.
+    composition: default, ltwh, ltrb
+    sort_by: top_left_to_bottom_right, distance_from_center
   Returns:
     datasets for various splits, the size of vocabulary and asset information.
   """
@@ -238,6 +243,10 @@ class LayoutDataset:
       resolution_h: Discretization resolution to use for h and height
         coordinates.
       limit: Maximum amount of element in a layout.
+      idx: index of the data to load
+      is_background_test: whether to return image link or not
+      composition: default, ltwh, ltrb
+      sort_by: top_left_to_bottom_right, distance_from_center
     """
     
     self.dataset_name = datasets_info.DatasetName(dataset_name)

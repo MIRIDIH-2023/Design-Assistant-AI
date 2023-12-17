@@ -422,6 +422,16 @@ class LayoutBaseTrainer(abc.ABC):
 
     return rst
 
+  '''IOU metrics만 계산하는 함수
+    Args:
+      generated_samples: inference한 layout
+      real_samples: test에서 뽑은 실제 layout
+      composition: default, ltrb, ltwh
+      text_iou: Text요소 끼리 IOU를 계산할지 여부 (True: Text요소 끼리 IOU 계산, False: Ground truth와 생성된 layout 사이의 IOU 계산)
+    return:
+      rst: test sample들의 평균 IOU값
+      iou: 각 sample의 IOU값 list
+  '''
   def evaluate_IOU_metrics_only(self,
                                 generated_samples,
                                 real_samples,
