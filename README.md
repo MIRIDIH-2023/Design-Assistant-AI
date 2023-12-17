@@ -3,7 +3,7 @@
 --- 
 <div align="center">
 
-![stop2023](img/stop2023.png){: width="100%" height="100%"}
+<img src="img/stop2023.png" width="100%" >
 
 </div>
 
