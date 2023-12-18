@@ -51,8 +51,6 @@ python xml_to_json.py
 | --- | --- |
 | `'form'` | ```List[Dict[str, Union]]``` |
 | `'template_idx'` | `int` |
-| `'sheet_url'` | `str` |
-| `'thumbnail_url'` | `str` |
 | `'page_no'` | `int` |
 | `'title'` | `str` |
 | `'primary_colors'` | `List[List[int]]` |
